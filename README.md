@@ -2,10 +2,23 @@
 
 Tuck the bar widgets you rarely need behind a divider on the [Omarchy](https://omarchy.org) bar. Click the arrow, press a hotkey, or let it fold itself away again after a few seconds.
 
-```
-collapsed   ‹  13%  61%   …   Saturday 1:13 PM
-expanded      ›  13%  61%   …   Saturday 1:13 PM
-```
+Tucked away:
+
+![Tuck closed: a single arrow sits left of the CPU meter](docs/collapsed.png)
+
+Open:
+
+![Tuck open: ten tucked widgets slide out beside the arrow](docs/expanded.png)
+
+<img src="docs/settings.png" alt="Tuck's settings popup, opened by right-clicking the arrow" width="280" align="right">
+
+Everything is adjustable from a right-click on the arrow: click or hover to open, auto-hide timing, arrow style, which way it opens, a count badge, and a list of tucked widgets to untuck with one click.
+
+<br clear="right">
+
+## Requirements
+
+Omarchy 4.5 or newer (the Quickshell-based shell). Nothing else to install.
 
 ## Install
 
@@ -18,6 +31,17 @@ Tuck lands on the bar as `tim.tuck`. Move it where you want the divider, for exa
 ```bash
 omarchy bar move tim.tuck --section right --index 0
 ```
+
+## Update
+
+```bash
+omarchy plugin update tim.tuck
+omarchy restart shell
+```
+
+The restart matters: the shell keeps running a plugin's previous code until it restarts.
+
+**Coming from 1.0:** right-click on the arrow now opens settings. It used to switch auto-hide off, so if Tuck stopped tucking itself away for you, that's why; turn it back on in settings.
 
 ## Use
 
@@ -91,7 +115,12 @@ node tests/model.test.js
 omarchy plugin validate .
 ```
 
-Saving any file under `~/.config/omarchy/plugins/tim.tuck/` reloads the plugin.
+Changes to `shell.json` settings apply live. Changes to `Tuck.qml` or `TuckModel.js` need `omarchy restart shell`: the shell logs "reloading" on save but keeps the compiled component until it restarts.
+
+## Changes
+
+- **1.1.0:** settings popup (right-click), hover mode, auto-hide timing, arrow styles, open direction, count badge, hide when empty, per-monitor clicks, start open, untuck from settings, `openSettings`/`closeSettings` IPC.
+- **1.0.0:** first release.
 
 ## License
 
