@@ -2,6 +2,7 @@ import QtQuick
 import qs.Commons
 import qs.Commons as Commons
 import qs.Ui
+import Quickshell.Io
 import "TuckModel.js" as Model
 
 // Tuck's settings popup. Tuck.qml loads this file only while the popup is
@@ -27,6 +28,19 @@ PopupCard {
   // PopupCard closes on an outside click through owner.close(). The owner is
   // this object rather than the widget: a close() on the widget would make
   // the bar treat Tuck as a panel for shell summon/toggle routing.
+  // Untuck through Omarchy's own CLI; the bar reloads the layout itself.
+  function untuck(ids) {
+    var command = Model.untuckCommand(ids, tuck.moduleName, tuck.towardEnd)
+    if (!command || settingsPopup.untucker.running) return
+    settingsPopup.untucker.command = command
+    settingsPopup.untucker.running = true
+  }
+  // Held in a property: PopupCard's children must be visual items.
+  readonly property Process untucker: Process {
+    stderr: StdioCollector { id: untuckErrors }
+    onExited: function(code) { if (code !== 0) console.warn("tim.tuck: untuck failed:", untuckErrors.text) }
+  }
+
   readonly property QtObject settingsOwner: QtObject {
     function close() { settingsPopup.tuck.settingsOpen = false }
   }
@@ -77,6 +91,13 @@ PopupCard {
         text: tuck.strings.t("settings.title")
         font.pixelSize: Style.font.subtitle
         font.bold: true
+      }
+
+      PlainText {
+        visible: tuck.trayConflict
+        width: parent.width
+        text: tuck.strings.t("settings.trayConflict")
+        color: Commons.Color.urgent
       }
 
       // ------------------------------------------------------- behavior
@@ -202,7 +223,7 @@ PopupCard {
           Button {
             text: tuck.strings.t("settings.untuck")
             tooltipText: modelData
-            onClicked: tuck.untuck([modelData])
+            onClicked: settingsPopup.untuck([modelData])
           }
         }
       }
@@ -211,7 +232,7 @@ PopupCard {
         visible: tuck.tuckedIds.length > 1
         text: tuck.strings.t("settings.untuckAll")
         bordered: true
-        onClicked: tuck.untuck(tuck.tuckedIds.slice())
+        onClicked: settingsPopup.untuck(tuck.tuckedIds.slice())
       }
 
       PlainText {

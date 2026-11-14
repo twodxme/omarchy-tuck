@@ -61,7 +61,7 @@ assert.strictEqual(m.prettyName("com.omastorm.radar"), "Radar")
 assert.strictEqual(m.prettyName("vpn"), "Vpn")
 assert.strictEqual(m.prettyName(""), "")
 
-// tuckedIds / untuck
+// tuckedIds
 function layout() {
   return {
     right: [{ id: "tim.tuck", autoHide: false }, { id: "omarchy.clock", format: "HH:mm" }],
@@ -69,15 +69,38 @@ function layout() {
   }
 }
 assert.deepStrictEqual(m.tuckedIds(layout()), ["omarchy.bluetooth", "omarchy.weather", "omarchy.audio"])
-const u = m.untuck(layout(), ["omarchy.audio", "omarchy.bluetooth"], "tim.tuck", false)
-assert.deepStrictEqual(u.tray, ["omarchy.weather"])
-assert.deepStrictEqual(u.right.map(m.entryId), ["tim.tuck", "omarchy.bluetooth", "omarchy.audio", "omarchy.clock"])
-assert.strictEqual(u.right[2].x, 1) // entry settings travel with it
-const ue = m.untuck(layout(), ["omarchy.weather"], "tim.tuck", true)
-assert.deepStrictEqual(ue.right.map(m.entryId), ["omarchy.weather", "tim.tuck", "omarchy.clock"])
-const nt = m.untuck({ right: [{ id: "omarchy.clock" }], tray: [{ id: "a.b" }] }, ["a.b"], "tim.tuck", false)
-assert.deepStrictEqual(nt.right.map(m.entryId), ["omarchy.clock", "a.b"])
-assert.deepStrictEqual(m.untuck({ right: [] }, ["x"], "tim.tuck", false), { right: [] })
+// untuckCommand: ids as arguments, landing on the visible side in tucked order
+assert.strictEqual(m.untuckCommand([], "tim.tuck", false), null)
+assert.strictEqual(m.untuckCommand(["", 5], "tim.tuck", false), null)
+const cmd = m.untuckCommand(["a.one", "b.two"], "tim.tuck", false)
+assert.deepStrictEqual(cmd.slice(0, 2), ["sh", "-c"])
+assert.deepStrictEqual(cmd.slice(3), ["sh", "tim.tuck", "b.two", "a.one"])
+assert.ok(cmd[2].includes("--after") && !cmd[2].includes("a.one"))
+assert.ok(m.untuckCommand(["x.y"], "tim.tuck", true)[2].includes("--before"))
+// Run it for real against a stand-in `omarchy`, ids with shell metacharacters included.
+{
+  const fs = require("fs"), os = require("os"), path = require("path"), cp = require("child_process")
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tuck-test-"))
+  const log = path.join(dir, "log")
+  fs.writeFileSync(path.join(dir, "omarchy"), `#!/bin/sh\nprintf '%s|' "$@" >> "${log}"; echo >> "${log}"\n`, { mode: 0o755 })
+  const run = (ids, towardEnd) => {
+    fs.writeFileSync(log, "")
+    const c = m.untuckCommand(ids, "tim.tuck", towardEnd)
+    cp.execFileSync(c[0], c.slice(1), { env: { ...process.env, PATH: dir + ":" + process.env.PATH } })
+    return fs.readFileSync(log, "utf8").trim().split("\n")
+  }
+  assert.deepStrictEqual(run(["a.one", "b.two"], false), ["bar|move|b.two|--after|tim.tuck|", "bar|move|a.one|--after|tim.tuck|"])
+  assert.deepStrictEqual(run(["a.one", "b.two"], true), ["bar|move|a.one|--before|tim.tuck|", "bar|move|b.two|--before|tim.tuck|"])
+  assert.deepStrictEqual(run(["x; touch pwned", "$(id)"], true), ["bar|move|x; touch pwned|--before|tim.tuck|", "bar|move|$(id)|--before|tim.tuck|"])
+  assert.ok(!fs.existsSync("pwned"))
+  fs.rmSync(dir, { recursive: true })
+}
+
+// hasStockTray: only outside the tray section counts
+assert.strictEqual(m.hasStockTray(null), false)
+assert.strictEqual(m.hasStockTray({ right: [{ id: "tim.tuck" }], tray: ["omarchy.tray"] }), false)
+assert.strictEqual(m.hasStockTray({ left: ["omarchy.menu"], right: [{ id: "omarchy.tray" }, "tim.tuck"] }), true)
+assert.strictEqual(m.hasStockTray({ center: "omarchy.tray" }), false)
 
 // tooltip
 const strings = { t: k => k, tn: (k, n) => ({ arg: x => `${k}(${n}):${x}` }) }

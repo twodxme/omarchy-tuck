@@ -62,7 +62,7 @@ Tuck answers over the shell's IPC, on every monitor at once:
 
 ```bash
 omarchy-shell tim.tuck toggle          # or expand / collapse
-omarchy-shell tim.tuck openSettings    # or closeSettings
+omarchy-shell tim.tuck openSettings    # on the focused monitor; or closeSettings
 ```
 
 Bind it in `~/.config/hypr/bindings.lua`:
@@ -104,7 +104,7 @@ omarchy bar set tim.tuck iconStyle caret
 
 ## Notes
 
-- Tuck hosts the bar's `tray` section, the same one Omarchy's stock tray (`omarchy.tray`) opens in its drawer. Use one or the other.
+- Tuck hosts the bar's `tray` section, the same one Omarchy's stock tray (`omarchy.tray`) opens in its drawer. Use one or the other: if both are on the bar, Tuck says so in its tooltip and settings.
 - Works on top, bottom, left and right bars. On a vertical bar the divider opens downward or upward.
 - English strings ship in `i18n/en.json`; other Omarchy languages fall back to them. Translations welcome.
 
@@ -119,7 +119,7 @@ Changes to `shell.json` settings apply live. Changes to `Tuck.qml`, `TuckSetting
 
 ## Changes
 
-- **1.1.1:** the settings popup is built only while it's open and freed after it closes, instead of living in every monitor's bar; the shell no longer compiles it at startup. One shared copy of the helper module.
+- **1.1.1:** **Untuck works** (in 1.1.0 it silently did nothing: Omarchy lets only bar plugins rewrite the layout, so it now goes through `omarchy bar move`). `openSettings` opens on the focused monitor. A warning when Omarchy's stock tray is also on the bar. The settings popup is built only while it's open instead of living in every monitor's bar. Tests run on GitHub.
 - **1.1.0:** settings popup (right-click), hover mode, auto-hide timing, arrow styles, open direction, count badge, hide when empty, per-monitor clicks, start open, untuck from settings, `openSettings`/`closeSettings` IPC.
 - **1.0.0:** first release.
 

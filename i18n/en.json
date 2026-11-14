@@ -1,17 +1,21 @@
 {
-  "tooltip.show": { "one": "Show %1 tucked widget", "other": "Show %1 tucked widgets" },
+  "tooltip.show": {
+    "one": "Show %1 tucked widget",
+    "other": "Show %1 tucked widgets"
+  },
   "tooltip.hide": "Tuck widgets away",
   "tooltip.empty": "Drag widgets here to tuck them away",
-  "tooltip.autoHideOn": { "one": "Tucks itself away after %1 second", "other": "Tucks itself away after %1 seconds" },
+  "tooltip.autoHideOn": {
+    "one": "Tucks itself away after %1 second",
+    "other": "Tucks itself away after %1 seconds"
+  },
   "tooltip.autoHideOff": "Stays open until you close it",
   "tooltip.hoverMode": "Opens while the pointer is over it",
   "tooltip.settings": "Right-click for settings",
-
   "settings.title": "Tuck",
   "settings.behavior": "Behavior",
   "settings.look": "Look",
   "settings.tucked": "Tucked widgets",
-
   "settings.openOn": "Open on",
   "settings.openOn.click": "Click",
   "settings.openOn.hover": "Hover",
@@ -23,7 +27,6 @@
   "settings.startOpen.desc": "Show tucked widgets when the shell starts.",
   "settings.syncMonitors": "Open on every monitor",
   "settings.syncMonitors.desc": "A click opens and closes the bar on all screens together. The hotkey always does.",
-
   "settings.iconStyle": "Arrow",
   "settings.iconStyle.chevron": "Chevron",
   "settings.iconStyle.arrow": "Arrow",
@@ -43,9 +46,10 @@
   "settings.showTooltip": "Tooltip",
   "settings.animate": "Animate",
   "settings.animate.desc": "Slide open and closed. Off follows Omarchy's own animation switch too.",
-
   "settings.untuck": "Untuck",
   "settings.untuckAll": "Untuck all",
   "settings.noneTucked": "Nothing tucked yet. Drag a widget along the bar and drop it beside the arrow.",
-  "settings.hotkey": "Hotkey: bind omarchy-shell tim.tuck toggle · settings: omarchy-shell tim.tuck openSettings"
+  "settings.hotkey": "Hotkey: bind omarchy-shell tim.tuck toggle · settings: omarchy-shell tim.tuck openSettings",
+  "tooltip.trayConflict": "Omarchy's tray is also on the bar: remove one of the two",
+  "settings.trayConflict": "Omarchy's tray is also on your bar, and both show the same widgets. Drag one of them off the bar."
 }

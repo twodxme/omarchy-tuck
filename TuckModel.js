@@ -128,34 +128,27 @@ function tuckedIds(layout) {
 // Moves the entries for `ids` out of the tray section and onto the bar just
 // past the divider, keeping each entry's own settings. Mutates and returns
 // `layout`. Without the divider on the bar, they go to the end of `right`.
-function untuck(layout, ids, tuckId, towardEnd) {
-  if (!layout || !Array.isArray(layout.tray)) return layout
-  var moving = [], staying = []
-  for (var i = 0; i < layout.tray.length; i++) {
-    var e = layout.tray[i]
-    if (ids.indexOf(entryId(e)) !== -1) moving.push(e)
-    else staying.push(e)
+// The command that untucks `ids`: Omarchy lets only bar plugins rewrite the
+// layout, so widgets move through `omarchy bar move`. They land on the
+// visible side of the divider (before it when the section opens past it)
+// in their tucked order. Ids travel as arguments, never inside the script.
+// Omarchy's own tray hosts the same section, so the two fight over it.
+function hasStockTray(layout) {
+  if (!layout) return false
+  for (var key in layout) {
+    if (key === "tray" || !Array.isArray(layout[key])) continue
+    for (var i = 0; i < layout[key].length; i++) if (entryId(layout[key][i]) === "omarchy.tray") return true
   }
-  if (!moving.length) return layout
-  layout.tray = staying
+  return false
+}
 
-  var sections = ["left", "centerBegin", "center", "centerEnd", "right"]
-  for (var s = 0; s < sections.length; s++) {
-    var arr = layout[sections[s]]
-    if (!Array.isArray(arr)) continue
-    for (var j = 0; j < arr.length; j++) {
-      if (entryId(arr[j]) === tuckId) {
-        // The visible side of the divider: before it when the widgets open
-        // past it, after it otherwise.
-        var at = towardEnd ? j : j + 1
-        Array.prototype.splice.apply(arr, [at, 0].concat(moving))
-        return layout
-      }
-    }
-  }
-  if (!Array.isArray(layout.right)) layout.right = []
-  layout.right = layout.right.concat(moving)
-  return layout
+function untuckCommand(ids, tuckId, towardEnd) {
+  var list = (Array.isArray(ids) ? ids : []).filter(function(id) { return typeof id === "string" && id !== "" })
+  if (!list.length) return null
+  // Each --after lands right after the divider, so go last to first.
+  if (!towardEnd) list = list.slice().reverse()
+  var script = 'for id; do omarchy bar move "$id" ' + (towardEnd ? "--before" : "--after") + ' "$TUCK_ID" || exit 1; done'
+  return ["sh", "-c", 'TUCK_ID=$1; shift; ' + script, "sh", tuckId].concat(list)
 }
 
 function tooltip(strings, count, open, cfg, secsText) {
@@ -174,6 +167,6 @@ if (typeof module !== "undefined") {
     ICON_STYLES: ICON_STYLES, OPEN_ON: OPEN_ON, OPEN_TOWARD: OPEN_TOWARD,
     resolve: resolve, opensTowardEnd: opensTowardEnd, glyph: glyph, chevronGlyph: chevronGlyph,
     shownSpan: shownSpan, withSetting: withSetting, entryId: entryId, prettyName: prettyName,
-    tuckedIds: tuckedIds, untuck: untuck, tooltip: tooltip, flag: flag, wholeNumber: wholeNumber
+    tuckedIds: tuckedIds, untuckCommand: untuckCommand, hasStockTray: hasStockTray, tooltip: tooltip, flag: flag, wholeNumber: wholeNumber
   }
 }

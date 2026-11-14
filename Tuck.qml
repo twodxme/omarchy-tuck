@@ -1,4 +1,6 @@
 import QtQuick
+import Quickshell
+import Quickshell.Hyprland
 import qs.Commons
 import qs.Commons as Commons
 import qs.Ui
@@ -48,6 +50,7 @@ BarWidget {
   readonly property bool open: expanded || holdOpen
 
   readonly property var tuckedIds: Model.tuckedIds(bar ? bar.layoutConfig : null)
+  readonly property bool trayConflict: Model.hasStockTray(bar ? bar.layoutConfig : null)
 
   // Settings arrive after the widget is built; apply "start open" once, the
   // first time they do.
@@ -83,6 +86,12 @@ BarWidget {
   function expand() { expanded = true }
   function collapse() { expanded = false }
   function showSettings() { settingsOpen = true }
+  // For IPC: only the bar on the monitor you're looking at opens it.
+  function showSettingsIfFocused() {
+    var window = root.QsWindow.window
+    var focused = Hyprland.focusedMonitor
+    if (!focused || !window || !window.screen || Hyprland.monitorFor(window.screen) === focused) showSettings()
+  }
   function hideSettings() { settingsOpen = false }
 
   function clickToggle() {
@@ -90,15 +99,7 @@ BarWidget {
     else toggleExpanded()
   }
 
-  function untuck(ids) {
-    if (!bar || !bar.shell || typeof bar.shell.mutateShellConfig !== "function") return
-    var towardEnd = root.towardEnd
-    var id = moduleName
-    bar.shell.mutateShellConfig(function(config) {
-      if (!config.bar || !config.bar.layout) return
-      Model.untuck(config.bar.layout, ids, id, towardEnd)
-    })
-  }
+
 
   // Click mode: close again after a while, but never under the pointer or
   // while something is holding the section open.
@@ -129,7 +130,7 @@ BarWidget {
     function toggle(): void { root.broadcast("toggleExpanded") }
     function expand(): void { root.broadcast("expand") }
     function collapse(): void { root.broadcast("collapse") }
-    function openSettings(): void { root.showSettings() }
+    function openSettings(): void { root.broadcast("showSettingsIfFocused") }
     function closeSettings(): void { root.broadcast("hideSettings") }
   }
 
@@ -200,9 +201,12 @@ BarWidget {
       labelText: root.cfg.showCount && !root.open && root.sectionCount > 0 && !root.vertical
         ? Commons.I18n.formatNumber(root.sectionCount, 0) : ""
       dimmed: root.sectionCount === 0 && !root.open
-      tooltipText: root.cfg.showTooltip
-        ? Model.tooltip(strings, root.sectionCount, root.open, root.cfg, Commons.I18n.formatNumber(root.cfg.autoHideSeconds, 0))
-        : ""
+      // The conflict warning shows even with tooltips off: it's the one
+      // thing a user has to act on.
+      tooltipText: (root.trayConflict ? strings.t("tooltip.trayConflict") + (root.cfg.showTooltip ? "\n" : "") : "")
+        + (root.cfg.showTooltip
+          ? Model.tooltip(strings, root.sectionCount, root.open, root.cfg, Commons.I18n.formatNumber(root.cfg.autoHideSeconds, 0))
+          : "")
       onPressed: function(button) {
         if (button === Qt.RightButton) root.settingsOpen = !root.settingsOpen
         else root.clickToggle()
