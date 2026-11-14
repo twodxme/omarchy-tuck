@@ -43,6 +43,19 @@ The restart matters: the shell keeps running a plugin's previous code until it r
 
 **Coming from 1.0:** right-click on the arrow now opens settings. It used to switch auto-hide off, so if Tuck stopped tucking itself away for you, that's why; turn it back on in settings.
 
+## Remove
+
+1. Bring tucked widgets back first: right-click the arrow and press **Untuck all**. Without Tuck nothing shows the bar's `tray` section, so anything left there disappears from the bar.
+2. Remove the plugin:
+
+   ```bash
+   omarchy plugin remove tim.tuck
+   ```
+
+3. If you bound a hotkey (see [Hotkey](#hotkey)), delete that line from `~/.config/hypr/bindings.lua`.
+
+Prefer Omarchy's stock tray instead? Skip step 1 and add `omarchy.tray` to the bar: it shows the same `tray` section.
+
 ## Use
 
 - **Click** the arrow to show or hide the tucked widgets.
