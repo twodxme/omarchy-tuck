@@ -75,7 +75,7 @@ omarchy bar set tim.tuck iconStyle caret
 
 - **Declutter, out of sight:** `hideWhenEmpty true`, `showTooltip false`, and use the hotkey.
 - **Stock-tray feel:** `openOn hover`.
-- **Divider at the right edge of the bar, opening inward:** put Tuck last in `right` and set `openToward start`.
+- **Arrow in front of the tucked widgets instead of after them:** `openToward end` on a divider in the right section (`start` does the same in the left section).
 - **Keep it open while you work, tuck when presenting:** `autoHide false`, then the hotkey.
 
 ## Notes
