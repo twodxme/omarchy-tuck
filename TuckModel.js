@@ -1,3 +1,5 @@
+.pragma library
+
 // Pure helpers for Tuck.qml, kept free of QML so tests can run them in node.
 
 var ICON_STYLES = ["chevron", "arrow", "caret", "double", "dots"]

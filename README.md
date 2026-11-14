@@ -115,10 +115,11 @@ node tests/model.test.js
 omarchy plugin validate .
 ```
 
-Changes to `shell.json` settings apply live. Changes to `Tuck.qml` or `TuckModel.js` need `omarchy restart shell`: the shell logs "reloading" on save but keeps the compiled component until it restarts.
+Changes to `shell.json` settings apply live. Changes to `Tuck.qml`, `TuckSettings.qml` or `TuckModel.js` need `omarchy restart shell`: the shell logs "reloading" on save but keeps the compiled component until it restarts.
 
 ## Changes
 
+- **1.1.1:** the settings popup is built only while it's open and freed after it closes, instead of living in every monitor's bar; the shell no longer compiles it at startup. One shared copy of the helper module.
 - **1.1.0:** settings popup (right-click), hover mode, auto-hide timing, arrow styles, open direction, count badge, hide when empty, per-monitor clicks, start open, untuck from settings, `openSettings`/`closeSettings` IPC.
 - **1.0.0:** first release.
 

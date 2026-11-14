@@ -1,5 +1,9 @@
 const assert = require("assert")
-const m = require("../TuckModel.js")
+// TuckModel.js starts with QML's `.pragma library`, which node can't parse.
+const src = require("fs").readFileSync(require("path").join(__dirname, "../TuckModel.js"), "utf8")
+const mod = { exports: {} }
+new Function("module", src.replace(/^\.pragma library\s*/, ""))(mod)
+const m = mod.exports
 
 // resolve: defaults
 const d = m.resolve(undefined)
