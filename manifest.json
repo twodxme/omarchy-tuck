@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "tim.tuck",
   "name": "Tuck",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "twodxme",
   "description": "Tuck the bar widgets you rarely need behind a divider; click, hotkey, or auto-hide",
   "kinds": [
@@ -15,6 +15,122 @@
     "displayName": "Tuck",
     "description": "Divider that collapses and expands the widgets dropped into it",
     "category": "System",
-    "allowMultiple": false
-  }
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "aliases": [
+      "hidden",
+      "collapse",
+      "drawer",
+      "declutter"
+    ],
+    "defaults": {
+      "openOn": "click",
+      "autoHide": true,
+      "autoHideSeconds": 10,
+      "startOpen": false,
+      "syncMonitors": true,
+      "iconStyle": "chevron",
+      "openToward": "auto",
+      "showCount": false,
+      "hideWhenEmpty": false,
+      "showTooltip": true,
+      "animate": true
+    },
+    "schema": [
+      {
+        "key": "openOn",
+        "type": "enum",
+        "label": "Open on",
+        "options": [
+          "click",
+          "hover"
+        ],
+        "defaultValue": "click",
+        "description": "Click the arrow to open and close, or open while the pointer is over it and close shortly after it leaves."
+      },
+      {
+        "key": "autoHide",
+        "type": "boolean",
+        "label": "Tuck away automatically",
+        "defaultValue": true,
+        "description": "Click mode: close again after autoHideSeconds. Waits while the pointer is over it, while a widget is dragged, and while a tucked widget's panel is open."
+      },
+      {
+        "key": "autoHideSeconds",
+        "type": "integer",
+        "label": "Tuck away after (seconds)",
+        "min": 1,
+        "max": 300,
+        "step": 1,
+        "defaultValue": 10
+      },
+      {
+        "key": "startOpen",
+        "type": "boolean",
+        "label": "Start open",
+        "defaultValue": false,
+        "description": "Show tucked widgets when the shell starts."
+      },
+      {
+        "key": "syncMonitors",
+        "type": "boolean",
+        "label": "Open on every monitor",
+        "defaultValue": true,
+        "description": "A click opens and closes the bar on all screens together. The IPC toggle always does."
+      },
+      {
+        "key": "iconStyle",
+        "type": "enum",
+        "label": "Arrow",
+        "options": [
+          "chevron",
+          "arrow",
+          "caret",
+          "double",
+          "dots"
+        ],
+        "defaultValue": "chevron"
+      },
+      {
+        "key": "openToward",
+        "type": "enum",
+        "label": "Opens toward",
+        "options": [
+          "auto",
+          "start",
+          "end"
+        ],
+        "defaultValue": "auto",
+        "description": "auto opens away from the section's fixed edge; start is left (up on a vertical bar), end is right (down)."
+      },
+      {
+        "key": "showCount",
+        "type": "boolean",
+        "label": "Show count",
+        "defaultValue": false,
+        "description": "Number of tucked widgets beside the arrow while closed (horizontal bars)."
+      },
+      {
+        "key": "hideWhenEmpty",
+        "type": "boolean",
+        "label": "Hide when empty",
+        "defaultValue": false,
+        "description": "No arrow while nothing is tucked; it reappears while a widget is dragged."
+      },
+      {
+        "key": "showTooltip",
+        "type": "boolean",
+        "label": "Tooltip",
+        "defaultValue": true
+      },
+      {
+        "key": "animate",
+        "type": "boolean",
+        "label": "Animate",
+        "defaultValue": true,
+        "description": "Slide open and closed. Omarchy's global animation switch also turns it off."
+      }
+    ]
+  },
+  "license": "MIT"
 }
