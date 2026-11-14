@@ -1,0 +1,7 @@
+{
+  "tooltip.show": "Show hidden widgets",
+  "tooltip.hide": "Hide widgets",
+  "tooltip.empty": "Drag widgets here to hide them",
+  "tooltip.autoHideOn": { "one": "Auto-hides after %1 second · right-click to keep open", "other": "Auto-hides after %1 seconds · right-click to keep open" },
+  "tooltip.autoHideOff": "Stays open · right-click to auto-hide"
+}

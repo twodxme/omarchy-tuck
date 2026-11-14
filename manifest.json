@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "tim.tuck",
+  "name": "Tuck",
+  "version": "1.0.0",
+  "author": "twodxme",
+  "description": "Tuck the bar widgets you rarely need behind a divider; click, hotkey, or auto-hide",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Tuck.qml"
+  },
+  "barWidget": {
+    "displayName": "Tuck",
+    "description": "Divider that collapses and expands the widgets dropped into it",
+    "category": "System",
+    "allowMultiple": false
+  }
+}
